@@ -23,7 +23,7 @@ models_map = {
 }
 
 
-_ACM_DIR = Path.home() / Path(".acm")
+_AICM_DIR = Path.home() / Path(".aicm")
 
 
 def hf_url(req_id, file_name):
@@ -32,15 +32,15 @@ def hf_url(req_id, file_name):
 
 
 def get_dir():
-    if not _ACM_DIR.exists():
-        _ACM_DIR.mkdir()
-    return _ACM_DIR
+    if not _AICM_DIR.exists():
+        _AICM_DIR.mkdir()
+    return _AICM_DIR
 
 
 def get_models_dir():
     get_dir()  # Ensure base directory exists
 
-    models_dir = _ACM_DIR / "models"
+    models_dir = _AICM_DIR / "models"
     if not models_dir.exists():
         models_dir.mkdir()
     return models_dir
