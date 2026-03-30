@@ -26,7 +26,7 @@ uv pip install aicm
 aicm --install
 ```
 
-Downloads the default Qwen2.5-Coder-1.5B model (~1GB) locally. Your code never leaves your machine.
+Downloads the default Qwen2.5-Coder-0.5B model (~400M) locally. Your code never leaves your machine.
 
 ### 3. Start Completing
 
@@ -81,8 +81,8 @@ Just like `cat`, `grep`, or `sed` — acimdoes one thing well: **complete your c
 - [ ] Configuration file support
 
 ### Models
-- [x] Qwen2.5-Coder-1.5B (default)
-- [ ] Qwen2.5-Coder-0.5B (lightweight option)
+- [x] Qwen2.5-Coder-0.5B (default)
+- [x] Qwen2.5-Coder-1.5B (more powerful option)
 - [ ] Custom GGUF model support
 - [ ] Automatic model downloading
 

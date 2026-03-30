@@ -20,6 +20,11 @@ models_map = {
         filename="Qwen2.5.1-Coder-1.5B-Instruct-Q4_K_M.gguf",
         prompt_fmt="<|fim_prefix|>{prefix}<|fim_suffix|>{suffix}<|fim_middle|>",
     ),
+    "qwen2.5-lite": ModelInfo(
+        req_id="bartowski/Qwen2.5-Coder-0.5B-Instruct-GGUF",
+        filename="Qwen2.5-Coder-0.5B-Instruct-Q4_K_M.gguf",
+        prompt_fmt="<|fim_prefix|>{prefix}<|fim_suffix|>{suffix}<|fim_middle|>",
+    ),
 }
 
 
@@ -180,19 +185,29 @@ def main():
     parser.add_argument(
         "--install",
         nargs="?",
-        const="qwen2.5",
+        const="qwen2.5-lite",
         metavar="MODEL",
-        help="Install the model (default: qwen2.5)",
+        help="Install the model (default: qwen2.5-lite, options: qwen2.5, qwen2.5-lite)",
+    )
+    parser.add_argument(
+        "--model",
+        default="qwen2.5-lite",
+        metavar="MODEL",
+        help="Model to use for completion (default: qwen2.5-lite, options: qwen2.5, qwen2.5-lite)",
     )
     args = parser.parse_args()
 
     if args.install:
         install_model(args.install)
+        return
 
+    if args.model not in models_map:
+        print(f"Error: Unknown model '{args.model}'. Available: {', '.join(models_map.keys())}", file=sys.stderr)
+        sys.exit(1)
 
     if not sys.stdin.isatty():
         text = sys.stdin.read()
-        model = load_cmp_model("qwen2.5")
+        model = load_cmp_model(args.model)
         res = model.complete(text, max_tokens=256)
         print(text, end="")
         high_light_print(res)
