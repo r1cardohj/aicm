@@ -1,7 +1,7 @@
 [project]
 name = "acm"
 version = "0.1.0"
-description = "Add your description here"
+description = "AI complete me."
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
