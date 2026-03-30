@@ -153,7 +153,6 @@ class CodeComplteModel:
         return self.complete(prefix, suffix, max_tokens)
 
 
-
 def load_cmp_model(alias: str) -> CodeComplteModel:
     if alias not in models_map:
         raise ValueError(f"Model alias '{alias}' not found in models_map")
@@ -172,26 +171,33 @@ def load_cmp_model(alias: str) -> CodeComplteModel:
     return CodeComplteModel(llm, models_map[alias])
 
 
-
 def high_light_print(text):
     print("\033[1;32m" + text + "\033[0m")  # green
 
 
 def main():
-    parser = argparse.ArgumentParser(
-        description="aicm: AI Complete Me"
+    parser = argparse.ArgumentParser(description="aicm: AI Complete Me")
+    parser.add_argument(
+        "--install",
+        nargs="?",
+        const="qwen2.5",
+        metavar="MODEL",
+        help="Install the model (default: qwen2.5)",
     )
-    parser.add_argument('--install', '-i', action='store_true', help='Install the model')
     args = parser.parse_args()
 
     if args.install:
-        install_model("qwen2.5")
+        install_model(args.install)
 
-    text = sys.stdin.read()
-    model = load_cmp_model("qwen2.5")
-    res = model.complete(text, max_tokens=256)
-    print(text, end="")
-    high_light_print(res)
+
+    if not sys.stdin.isatty():
+        text = sys.stdin.read()
+        model = load_cmp_model("qwen2.5")
+        res = model.complete(text, max_tokens=256)
+        print(text, end="")
+        high_light_print(res)
+    else:
+        parser.print_help()
 
 
 if __name__ == "__main__":
