@@ -6,6 +6,38 @@
 
 > A local-first, privacy-focused code completion CLI tool for developers who want AI assistance without sending their code to the cloud.
 
+## Installation & Quick Start
+
+Get up and running in **under 60 seconds**. No API keys, no cloud, no nonsense.
+
+### 1. Install
+
+```bash
+# Via pip
+pip install aicm
+
+# Or blazing fast with uv
+uv pip install aicm
+```
+
+### 2. Download Model (One-time)
+
+```bash
+aicm --install
+```
+
+Downloads the default Qwen2.5-Coder-1.5B model (~1GB) locally. Your code never leaves your machine.
+
+### 3. Start Completing
+
+```bash
+# Pipe a function stub
+echo "def fibonacci(n):" | aicm
+```
+
+**That's it.** No config files, no sign-ups, no telemetry. Just pure local AI completion.
+
+
 ## 🚧 Work In Progress
 
 **This project is in active development. Core features are being implemented and APIs may change. Follow the progress and contribute!**
