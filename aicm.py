@@ -3,6 +3,7 @@ from typing import Callable
 from collections import namedtuple
 
 import sys
+import argparse
 
 from llama_cpp import Llama
 import requests
@@ -176,12 +177,22 @@ def high_light_print(text):
     print("\033[1;32m" + text + "\033[0m")  # green
 
 
-if __name__ == "__main__":
-    model = load_cmp_model("qwen2.5")
+def main():
+    parser = argparse.ArgumentParser(
+        description="aicm: AI Complete Me"
+    )
+    parser.add_argument('--install', '-i', action='store_true', help='Install the model')
+    args = parser.parse_args()
 
-    # read code from stdin
-    code = sys.stdin.read()
-    res = model.complete(code, max_tokens=256)
-    print(code, end="")
+    if args.install:
+        install_model("qwen2.5")
+
+    text = sys.stdin.read()
+    model = load_cmp_model("qwen2.5")
+    res = model.complete(text, max_tokens=256)
+    print(text, end="")
     high_light_print(res)
 
+
+if __name__ == "__main__":
+    main()

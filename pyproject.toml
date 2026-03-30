@@ -8,3 +8,7 @@ dependencies = [
     "llama-cpp-python>=0.3.19",
     "requests>=2.33.0",
 ]
+
+
+[project.scripts]
+aicm = "aicm:main"  # 这样就能直接用 aicm 命令了
