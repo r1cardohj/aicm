@@ -1,5 +1,5 @@
 [project]
-name = "acm"
+name = "aicm"
 version = "0.1.0"
 description = "AI complete me."
 readme = "README.md"

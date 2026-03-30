@@ -1,6 +1,6 @@
-# acm - AI Complete Me
+# aicm - AI Complete Me
 
-[![WIP](https://img.shields.io/badge/status-WIP-orange)](https://github.com/r1cardohj/acm)
+[![WIP](https://img.shields.io/badge/status-WIP-orange)](https://github.com/r1cardohj/acim)
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue)](https://python.org)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
@@ -12,7 +12,7 @@
 
 ## 🎯 Concept & Vision
 
-**acm** is designed to be the **Unix-philosophy** code completion tool:
+**acim** is designed to be the **Unix-philosophy** code completion tool:
 
 - **Local-only**: Your code never leaves your machine
 - **Lightweight**: Optimized for Apple Silicon and modern hardware  
@@ -22,7 +22,7 @@
 ### Philosophy
 
 ```
-$ echo "def quick_osrt(arr):" | acm
+$ echo "def quick_osrt(arr):" |acim
 def quick_sort(arr):
     if len(arr) <= 1:
         return arr
@@ -34,12 +34,12 @@ def quick_sort(arr):
         return quick_sort(left) + middle + quick_sort(right)
 ```
 
-Just like `cat`, `grep`, or `sed` — acm does one thing well: **complete your code**.
+Just like `cat`, `grep`, or `sed` — acimdoes one thing well: **complete your code**.
 
 ## ✨ Planned Features
 
 ### Core
-- [x] Pipe-based input (`echo "..." | acm`)
+- [x] Pipe-based input (`echo "..." |acim`)
 - [x] Fill-in-the-middle (FIM) completion
 - [x] Single-line suggestions
 - [ ] simple indent handle
@@ -67,7 +67,7 @@ Just like `cat`, `grep`, or `sed` — acm does one thing well: **complete your c
          │
          ▼
 ┌─────────────────┐
-│  acm CLI        │  Argument parsing, context detection
+│  acimCLI        │  Argument parsing, context detection
 │  (entry point)  │
 └────────┬────────┘
          │
@@ -117,7 +117,7 @@ Just like `cat`, `grep`, or `sed` — acm does one thing well: **complete your c
 ### Quick prototyping
 ```bash
 # Start a new function
-echo "def calculate_fibonacci(n):" | acm
+echo "def calculate_fibonacci(n):" |acim
 ```
 
 ## 🖥️ System Requirements
@@ -139,4 +139,4 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 ---
 
-**Made with ❤️ for the local-first AI movement.**
+**Made with for the local-first AI movement.**
