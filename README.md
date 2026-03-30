@@ -16,6 +16,8 @@
 
 - **Local-only**: Your code never leaves your machine
 - **Lightweight**: Optimized for Apple Silicon and modern hardware  
+- **Fast**: Instant suggestions with efficient models
+- **Out-of-the-box**: default is best, no configuration needed in most cases
 - **Composable**: Works with pipes, files, and editor integrations
 - **Hackable**: Simple Python codebase, easy to customize
 
@@ -99,7 +101,7 @@ Just like `cat`, `grep`, or `sed` — acimdoes one thing well: **complete your c
 - [ ] Indentation handling
 - [ ] Configuration system
 - [ ] Error handling & logging
-- [ ] Lanuch PYPI for install
+- [ ] Installation via pip, uv...
 
 ### Phase 2: Usability
 - [ ] Daemon mode for instant response
