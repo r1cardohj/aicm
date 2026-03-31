@@ -156,8 +156,9 @@ echo "def calculate_fibonacci(n):" |acim
 
 ## 🖥️ System Requirements
 
-- **macOS**: Apple Silicon (M1/M2/M3) or Intel
-- **Linux**: x86_64 or ARM64
+- **macOS**: Apple Silicon (M2/M3...) - Fully supported ✅
+- **macOS**: Intel - Work in progress 🚧
+- **Linux**: x86_64 or ARM64 - Work in progress 🚧
 - **RAM**: 4GB+ (for 1.5B model), 2GB+ (for 0.5B model)
 - **Python**: 3.10+
 - **Storage**: ~1.5GB for models
