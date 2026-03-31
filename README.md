@@ -68,7 +68,7 @@ def quick_sort(arr):
         return quick_sort(left) + middle + quick_sort(right)
 ```
 
-Just like `cat`, `grep`, or `sed` — acimdoes one thing well: **complete your code**.
+Just like `cat`, `grep`, or `sed` — aicm does one thing well: **complete your code**.
 
 ## ✨ Planned Features
 
@@ -91,39 +91,6 @@ Just like `cat`, `grep`, or `sed` — acimdoes one thing well: **complete your c
 - [ ] VSCode extension
 - [ ] LSP protocol support
 
-## 🏗️ Architecture (Conceptual)
-
-```
-┌─────────────────┐
-│   Input Source  │  stdin / file / editor
-│  (stdin/file)   │
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│  acimCLI        │  Argument parsing, context detection
-│  (entry point)  │
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐     ┌──────────────────┐
-│  CodeComplete   │────▶│  llama-cpp-python │
-│  Engine         │     │  (local inference) │
-│                 │◀────│                   │
-└────────┬────────┘     └──────────────────┘
-         │
-         ▼
-┌─────────────────┐
-│   Post-process  │  Indentation fix, deduplication
-│                 │
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│   Output        │  stdout / editor
-│                 │
-└─────────────────┘
-```
 
 ## 🛤️ Roadmap
 
