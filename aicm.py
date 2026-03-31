@@ -3,37 +3,39 @@ from typing import Callable
 from collections import namedtuple
 
 import sys
+import os
 import argparse
 
 from llama_cpp import Llama
 import requests
 
-ModelInfo = namedtuple("ModelInfo", ["req_id", "filename", "prompt_fmt"])
-SKIP_PREFIXES = ("#", '"', "'", "This", "The ", "Here ", "Note: ")
+ModelInfo = namedtuple('ModelInfo', ['req_id', 'filename', 'prompt_fmt'])
+SKIP_PREFIXES = ('#', '"', "'", 'This', 'The ', 'Here ', 'Note: ')
 
+INSTALL_ENDPOINT = os.environ.get('INSTALL_ENDPOINT', 'https://huggingface.co')
 
 ## MODEL STUFF
 
 models_map = {
-    "qwen2.5": ModelInfo(
-        req_id="bartowski/Qwen2.5.1-Coder-1.5B-Instruct-GGUF",
-        filename="Qwen2.5.1-Coder-1.5B-Instruct-Q4_K_M.gguf",
-        prompt_fmt="<|fim_prefix|>{prefix}<|fim_suffix|>{suffix}<|fim_middle|>",
+    'qwen2.5': ModelInfo(
+        req_id='bartowski/Qwen2.5.1-Coder-1.5B-Instruct-GGUF',
+        filename='Qwen2.5.1-Coder-1.5B-Instruct-Q4_K_M.gguf',
+        prompt_fmt='<|fim_prefix|>{prefix}<|fim_suffix|>{suffix}<|fim_middle|>',
     ),
-    "qwen2.5-lite": ModelInfo(
-        req_id="bartowski/Qwen2.5-Coder-0.5B-Instruct-GGUF",
-        filename="Qwen2.5-Coder-0.5B-Instruct-Q4_K_M.gguf",
-        prompt_fmt="<|fim_prefix|>{prefix}<|fim_suffix|>{suffix}<|fim_middle|>",
+    'qwen2.5-lite': ModelInfo(
+        req_id='bartowski/Qwen2.5-Coder-0.5B-Instruct-GGUF',
+        filename='Qwen2.5-Coder-0.5B-Instruct-Q4_K_M.gguf',
+        prompt_fmt='<|fim_prefix|>{prefix}<|fim_suffix|>{suffix}<|fim_middle|>',
     ),
 }
 
 
-_AICM_DIR = Path.home() / Path(".aicm")
+_AICM_DIR = Path.home() / Path('.aicm')
 
 
 def hf_url(req_id, file_name):
     """get huggingface url for downloading model files"""
-    return f"https://huggingface.co/{req_id}/resolve/main/{file_name}"
+    return f'{INSTALL_ENDPOINT}/{req_id}/resolve/main/{file_name}'
 
 
 def get_dir():
@@ -68,17 +70,17 @@ def download_file(
     req_headers = headers.copy() if headers else {}
 
     if downloaded > 0:
-        req_headers["Range"] = f"bytes={downloaded}"
-        print(f"Resuming download from byte {downloaded}...")
+        req_headers['Range'] = f'bytes={downloaded}'
+        print(f'Resuming download from byte {downloaded}...')
 
     resp = requests.get(url, headers=req_headers, stream=True)
     resp.raise_for_status()
 
-    total_size = int(resp.headers.get("Content-Length", 0))
-    if "content-range" in set(key.lower() for key in resp.headers):
+    total_size = int(resp.headers.get('Content-Length', 0))
+    if 'content-range' in set(key.lower() for key in resp.headers):
         total_size += downloaded
 
-    mode = "ab" if downloaded > 0 else "wb"
+    mode = 'ab' if downloaded > 0 else 'wb'
 
     with open(save_path, mode) as f:
         for chunk in resp.iter_content(chunk_size=chunk_size):
@@ -88,6 +90,9 @@ def download_file(
                 if progress_callback:
                     progress_callback(downloaded, total_size)
 
+            if total_size > 0 and downloaded >= total_size:
+                break
+
     return str(save_path)
 
 
@@ -95,12 +100,12 @@ def print_progress(current: int, total: int):
     if total > 0:
         percent = (current / total) * 100
         print(
-            f"Downloaded {current} of {total} bytes ({percent:.2f}%)",
-            end="\r",
+            f'Downloaded {current} of {total} bytes ({percent:.2f}%)',
+            end='\r',
             flush=True,
         )
     else:
-        print("Downloaded {current} bytes", end="\r", flush=True)
+        print('Downloaded {current} bytes', end='\r', flush=True)
 
 
 def install_model(alias: str):
@@ -121,7 +126,7 @@ class CodeComplteModel:
         self.llm = llm
         self.model_info = model_info
 
-    def complete(self, prefix, suffix: str = "", max_tokens: int = 512) -> str:
+    def complete(self, prefix, suffix: str = '', max_tokens: int = 512) -> str:
         if suffix:
             prompt = self.model_info.prompt_fmt.format(prefix=prefix, suffix=suffix)
         else:
@@ -133,26 +138,26 @@ class CodeComplteModel:
             temperature=0.1,  # low temperature for more deterministic output
             top_p=0.95,
             stop=[
-                "<|fim_prefix|>",
-                "<|fim_suffix|>",
-                "<|fim_middle|>",
-                "<|endoftext|>",
-                "\n\n#",  # 停止：空行+注释（解释开始）
+                '<|fim_prefix|>',
+                '<|fim_suffix|>',
+                '<|fim_middle|>',
+                '<|endoftext|>',
+                '\n\n#',  # 停止：空行+注释（解释开始）
                 '\n\n"',  # 停止：空行+引号（文档字符串）
-                "\n\nHere",  # 停止：解释性文字
-                "\n\nThis",  # 停止：解释性文字
-                "\n\nThe",  # 停止：解释性文字
-                "\n\n##",  # 停止：markdown标题
-                "```",  # 停止：代码块结束
+                '\n\nHere',  # 停止：解释性文字
+                '\n\nThis',  # 停止：解释性文字
+                '\n\nThe',  # 停止：解释性文字
+                '\n\n##',  # 停止：markdown标题
+                '```',  # 停止：代码块结束
             ],
             echo=False,
         )
 
-        return output["choices"][0]["text"]
+        return output['choices'][0]['text']
 
-    def complete_line(self, prefix, suffix: str = "", max_tokens: int = 512) -> str:
+    def complete_line(self, prefix, suffix: str = '', max_tokens: int = 512) -> str:
         completion = self.complete(prefix, suffix, max_tokens)
-        return completion.splitlines()[0] if completion else ""
+        return completion.splitlines()[0] if completion else ''
 
     def insert_code(self, prefix, suffix: str, max_tokens: int = 512) -> str:
         return self.complete(prefix, suffix, max_tokens)
@@ -164,36 +169,37 @@ def load_cmp_model(alias: str) -> CodeComplteModel:
 
     model_path = get_models_dir() / models_map[alias].filename
 
+
     llm = Llama(
         model_path=str(model_path),
         n_ctx=32768,
         n_gpu_layers=-1,
         n_batch=512,
         verbose=False,
-        chat_format="chatml",
+        chat_format='chatml',
     )
 
     return CodeComplteModel(llm, models_map[alias])
 
 
 def high_light_print(text):
-    print("\033[1;32m" + text + "\033[0m")  # green
+    print('\033[1;32m' + text + '\033[0m')  # green
 
 
 def main():
-    parser = argparse.ArgumentParser(description="aicm: AI Complete Me")
+    parser = argparse.ArgumentParser(description='aicm: AI Complete Me')
     parser.add_argument(
-        "--install",
-        nargs="?",
-        const="qwen2.5-lite",
-        metavar="MODEL",
-        help="Install the model (default: qwen2.5-lite, options: qwen2.5, qwen2.5-lite)",
+        '--install',
+        nargs='?',
+        const='qwen2.5-lite',
+        metavar='MODEL',
+        help='Install the model (default: qwen2.5-lite, options: qwen2.5, qwen2.5-lite)',
     )
     parser.add_argument(
-        "--model",
-        default="qwen2.5-lite",
-        metavar="MODEL",
-        help="Model to use for completion (default: qwen2.5-lite, options: qwen2.5, qwen2.5-lite)",
+        '--model',
+        default='qwen2.5-lite',
+        metavar='MODEL',
+        help='Model to use for completion (default: qwen2.5-lite, options: qwen2.5, qwen2.5-lite)',
     )
     args = parser.parse_args()
 
@@ -202,18 +208,21 @@ def main():
         return
 
     if args.model not in models_map:
-        print(f"Error: Unknown model '{args.model}'. Available: {', '.join(models_map.keys())}", file=sys.stderr)
+        print(
+            f"Error: Unknown model '{args.model}'. Available: {', '.join(models_map.keys())}",
+            file=sys.stderr,
+        )
         sys.exit(1)
 
     if not sys.stdin.isatty():
         text = sys.stdin.read()
         model = load_cmp_model(args.model)
         res = model.complete(text, max_tokens=256)
-        print(text, end="")
+        print(text, end='')
         high_light_print(res)
     else:
         parser.print_help()
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
