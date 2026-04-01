@@ -176,8 +176,25 @@ class CodeComplteModel:
         )
         return output['choices'][0]['text']
 
-    def insert_code(self, prefix: str, suffix: str, max_tokens: int = 512) -> str:
-        return self.complete(prefix, suffix, max_tokens)
+    def insert_code(self, prefix: str, suffix: str, max_tokens: int = 64) -> str:
+        prompt = self.model_info.prompt_fmt.format(prefix=prefix, suffix=suffix)
+        output = self.llm(
+            prompt=prompt,
+            max_tokens=max_tokens,
+            temperature=0.1,
+            top_p=0.95,
+            stop=[
+                '<|fim_prefix|>',
+                '<|fim_suffix|>',
+                '<|fim_middle|>',
+                '<|endoftext|>',
+                '\n\n',
+                '\n#',
+                '\n//'
+            ],
+            echo=False,
+        )
+        return output['choices'][0]['text']
 
 
 def load_cmp_model(alias: str) -> CodeComplteModel:
@@ -212,6 +229,7 @@ def main():
         help='Install the model (default: qwen2.5-lite, options: qwen2.5, qwen2.5-lite)',
     )
     parser.add_argument(
+        '-m',
         '--model',
         default='qwen2.5-lite',
         metavar='MODEL',
@@ -219,6 +237,13 @@ def main():
     )
     parser.add_argument(
         '-l', '--line', help='complete current line', action='store_true'
+    )
+    parser.add_argument(
+        '-s',
+        '--suffix',
+        default='',
+        metavar='SUFFIX',
+        help='suffix text for fill-in-the-middle completion',
     )
     args = parser.parse_args()
 
@@ -238,11 +263,15 @@ def main():
         model = load_cmp_model(args.model)
         res = None
         if args.line:
-            res = model.complete_line(text, max_tokens=256)
+            res = model.complete_line(text, args.suffix, max_tokens=256)
+        elif args.suffix:
+            res = model.insert_code(text, args.suffix)
         else:
             res = model.complete(text, max_tokens=256)
         print(text, end='')
         high_light_print(res)
+        if args.suffix:
+            print(args.suffix)
     else:
         parser.print_help()
 
