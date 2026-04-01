@@ -47,7 +47,7 @@ def get_dir():
 def get_models_dir():
     get_dir()  # Ensure base directory exists
 
-    models_dir = _AICM_DIR / "models"
+    models_dir = _AICM_DIR / 'models'
     if not models_dir.exists():
         models_dir.mkdir()
     return models_dir
@@ -130,7 +130,7 @@ class CodeComplteModel:
         if suffix:
             prompt = self.model_info.prompt_fmt.format(prefix=prefix, suffix=suffix)
         else:
-            prompt = prefix
+            prompt = self.model_info.prompt_fmt.format(prefix=prefix, suffix='')
 
         output = self.llm(
             prompt=prompt,
@@ -155,11 +155,28 @@ class CodeComplteModel:
 
         return output['choices'][0]['text']
 
-    def complete_line(self, prefix, suffix: str = '', max_tokens: int = 512) -> str:
-        completion = self.complete(prefix, suffix, max_tokens)
-        return completion.splitlines()[0] if completion else ''
+    def complete_line(
+        self, prefix: str, suffix: str = '', max_tokens: int = 512
+    ) -> str:
+        prompt = self.model_info.prompt_fmt.format(prefix=prefix, suffix=suffix)
+        output = self.llm(
+            prompt=prompt,
+            max_tokens=max_tokens,
+            temperature=0.1,
+            top_p=0.95,
+            stop=[
+                '<|fim_prefix|>',
+                '<|fim_suffix|>',
+                '<|fim_middle|>',
+                '<|endoftext|>',
+                '\n',  # 关键：遇到换行符立即停止
+                '\r',
+            ],
+            echo=False,
+        )
+        return output['choices'][0]['text']
 
-    def insert_code(self, prefix, suffix: str, max_tokens: int = 512) -> str:
+    def insert_code(self, prefix: str, suffix: str, max_tokens: int = 512) -> str:
         return self.complete(prefix, suffix, max_tokens)
 
 
@@ -168,7 +185,6 @@ def load_cmp_model(alias: str) -> CodeComplteModel:
         raise ValueError(f"Model alias '{alias}' not found in models_map")
 
     model_path = get_models_dir() / models_map[alias].filename
-
 
     llm = Llama(
         model_path=str(model_path),
@@ -201,6 +217,9 @@ def main():
         metavar='MODEL',
         help='Model to use for completion (default: qwen2.5-lite, options: qwen2.5, qwen2.5-lite)',
     )
+    parser.add_argument(
+        '-l', '--line', help='complete current line', action='store_true'
+    )
     args = parser.parse_args()
 
     if args.install:
@@ -215,9 +234,13 @@ def main():
         sys.exit(1)
 
     if not sys.stdin.isatty():
-        text = sys.stdin.read()
+        text = sys.stdin.read().rstrip('\n')
         model = load_cmp_model(args.model)
-        res = model.complete(text, max_tokens=256)
+        res = None
+        if args.line:
+            res = model.complete_line(text, max_tokens=256)
+        else:
+            res = model.complete(text, max_tokens=256)
         print(text, end='')
         high_light_print(res)
     else:
