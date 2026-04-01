@@ -56,7 +56,7 @@ echo "def fibonacci(n):" | aicm
 ### Philosophy
 
 ```
-$ echo "def quick_osrt(arr):" |acim
+$ echo "def quick_sort(arr):" | acim
 def quick_sort(arr):
     if len(arr) <= 1:
         return arr
