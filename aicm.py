@@ -156,7 +156,7 @@ class CodeComplteModel:
         return output['choices'][0]['text']
 
     def complete_line(
-        self, prefix: str, suffix: str = '', max_tokens: int = 512
+        self, prefix: str, suffix: str = '', max_tokens: int = 32
     ) -> str:
         prompt = self.model_info.prompt_fmt.format(prefix=prefix, suffix=suffix)
         output = self.llm(
