@@ -215,9 +215,6 @@ def load_cmp_model(alias: str) -> CodeComplteModel:
     return CodeComplteModel(llm, models_map[alias])
 
 
-def high_light_print(text):
-    print('\033[1;32m' + text + '\033[0m')  # green
-
 
 def main():
     parser = argparse.ArgumentParser(description='aicm: AI Complete Me')
@@ -269,7 +266,7 @@ def main():
         else:
             res = model.complete(text, max_tokens=256)
         print(text, end='')
-        high_light_print(res)
+        print(res)
         if args.suffix:
             print(args.suffix)
     else:
