@@ -242,6 +242,12 @@ def main():
         metavar='SUFFIX',
         help='suffix text for fill-in-the-middle completion',
     )
+    parser.add_argument(
+        '-f',
+        '--full',
+        action='store_true',
+        help='output full code including input (default: only output completion)',
+    )
     args = parser.parse_args()
 
     if args.install:
@@ -265,10 +271,15 @@ def main():
             res = model.insert_code(text, args.suffix)
         else:
             res = model.complete(text, max_tokens=256)
-        print(text, end='')
-        print(res)
-        if args.suffix:
-            print(args.suffix)
+        if args.full:
+            print(text + res, end='')
+            if args.suffix:
+                print(args.suffix)
+            else:
+                print()
+        # Default: only output completion
+        else:
+            print(res)
     else:
         parser.print_help()
 
