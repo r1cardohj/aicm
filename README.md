@@ -57,15 +57,6 @@ echo "def fibonacci(n):" | aicm
 
 ```
 $ echo "def quick_sort(arr):" | acim
-def quick_sort(arr):
-    if len(arr) <= 1:
-        return arr
-    else:
-        pivot = arr[len(arr) // 2]
-        left = [x for x in arr if x < pivot]
-        middle = [x for x in arr if x == pivot]
-        right = [x for x in arr if x > pivot]
-        return quick_sort(left) + middle + quick_sort(right)
 ```
 
 Just like `cat`, `grep`, or `sed` — aicm does one thing well: **complete your code**.
@@ -76,7 +67,6 @@ Just like `cat`, `grep`, or `sed` — aicm does one thing well: **complete your 
 - [x] Pipe-based input (`echo "..." |acim`)
 - [x] Fill-in-the-middle (FIM) completion
 - [x] Single-line suggestions
-- [ ] simple indent handle
 - [ ] Daemon mode (persistent model in memory)
 - [ ] Configuration file support
 
@@ -87,7 +77,7 @@ Just like `cat`, `grep`, or `sed` — aicm does one thing well: **complete your 
 - [ ] Automatic model downloading
 
 ### Integrations
-- [ ] (Neo)vim plugin
+- [ ] (Neo)vim plugin (Working...)
 - [ ] VSCode extension
 - [ ] LSP protocol support
 
@@ -97,7 +87,6 @@ Just like `cat`, `grep`, or `sed` — aicm does one thing well: **complete your 
 ### Phase 1: Foundation (Current)
 - [x] Basic completion via stdin
 - [x] Model loading and inference
-- [ ] Indentation handling
 - [ ] Configuration system
 - [ ] Error handling & logging
 - [ ] Installation via pip, uv...
